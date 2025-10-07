@@ -1,0 +1,21 @@
+var required_permissions = map[string][]string {%s
+}
+
+// Permissions maps gRPC full method names (/package.Service/Method) to a list of required permissions.
+// NOTE: It relies on the presence of the generated security options file.
+func Permissions() map[string][]Permission {
+    temp := make(map[string][]Permission, len(required_permissions))
+    for k, v := range required_permissions {
+        temp[k] = append([]Permission{}, v...)
+    }
+    return temp
+}
+
+// PermissionsByFullMethod retrieves required permissions by grpc.info.FullMethod.
+// NOTE: It relies on the presence of the generated security options file.
+func PermissionsByFullMethod(fullMethod string) []Permission {
+    if perms, ok := required_permissions[fullMethod]; ok {
+        return append([]Permission{}, perms...)
+    }
+    return nil
+}
